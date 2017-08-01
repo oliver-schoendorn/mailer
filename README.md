@@ -1,4 +1,4 @@
-# OS/Mailer
+# oliver-schoendorn/mailer
 
 This is a little zendframework/zend-mail wrapper that will automagically construct proper multipart mime mails.
 
