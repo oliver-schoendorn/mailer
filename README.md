@@ -6,7 +6,7 @@ Please feel free to submit pull requests.
 
 ## Installation
 ```bash
-composer require os/mailer
+composer require oliver-schoendorn/mailer
 ```
 
 ## Usage example
