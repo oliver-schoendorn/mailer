@@ -2,7 +2,8 @@
     "name": "os/mailer",
     "description": "A little zendframework/zend-mail wrapper for easy composition of mime mails.",
     "type": "library",
-    "license": "unlicensed",
+    "keywords": [ "mailer", "mime-mails", "composer-library", "zend-framework", "zend-mail"],
+    "license": "Apache-2.0",
     "authors": [
         {
             "name": "Oliver Schoendorn",
