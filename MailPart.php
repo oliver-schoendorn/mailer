@@ -32,15 +32,16 @@ class MailPart
      * MailAttachment constructor.
      *
      * @param string $id
+     * @param MimePart|null $mimePart
      */
-    public function __construct(string $id = '')
+    public function __construct(string $id = '', MimePart $mimePart = null)
     {
         // Generate a random id
         if ( ! $id) {
             $id = bin2hex(openssl_random_pseudo_bytes(8));
         }
 
-        $this->mimePart = (new MimePart())->setId(trim($id, '<>') . '@mailer.oswebstyle.de');
+        $this->mimePart = ($mimePart ?? new MimePart())->setId(trim($id, '<>') . '@mailer.oswebstyle.de');
     }
 
     /**
