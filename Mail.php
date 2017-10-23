@@ -246,6 +246,9 @@ class Mail
         }
 
         // Generate and set the body to the mail message
+        $this->mail->getHeaders()->addHeaderLine(
+            'Message-Id: ' . date('Ymd') . '.' . md5(microtime(true)) . '@mailer.oswebstyle.de'
+        );
         $this->mail->setBody($this->generateMessage());
 
         // Send the mail
