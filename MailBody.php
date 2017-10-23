@@ -23,9 +23,11 @@ use Zend\Mime\Mime;
 
 class MailBody extends MailPart
 {
-    public function __construct(string $mimeType = 'text/html', bool $isAlternative = false)
+    public function __construct(string $mimeType = Mime::TYPE_HTML)
     {
-        parent::__construct();
+        parent::__construct(microtime(true));
+        $this->setMimeType($mimeType);
+        $this->mimePart->setId((string) microtime(true));
         $this->mimePart->setEncoding(Mime::ENCODING_QUOTEDPRINTABLE);
     }
 }
