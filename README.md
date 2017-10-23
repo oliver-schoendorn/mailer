@@ -38,7 +38,7 @@ which might break your carefully crafted mail layout.
 
 use OS\Mail\MailAttachment;
 
-$inlineImage = (new MailAttachment())
+$inlineImage = (new MailAttachment('file.jpg'))
    ->setContent(fopen('path/to/file.jpg', 'r'))
    ->setMimeType('image/jpg');
 
@@ -69,7 +69,7 @@ Usually, these only appear attachment in a context menu or similar, based on the
 <?php
 use OS\Mail\MailAttachment;
 
-$mail->addAttachment((new MailAttachment())
+$mail->addAttachment((new MailAttachment('file.jpg'))
     ->setContent(fopen('path/to/file.jpg', 'r'))
     ->setMimeType('image/jpg'));
 ```

@@ -24,22 +24,12 @@ use Zend\Mime\Part as MimePart;
 
 class MailAttachment extends MailPart
 {
-    public function __construct($id = '')
+    public function __construct($filename = 'attachment', $id = '')
     {
         parent::__construct($id);
         $this->mimePart->setDisposition(Mime::DISPOSITION_ATTACHMENT);
         $this->mimePart->setEncoding(Mime::ENCODING_BASE64);
-        $this->mimePart->setFileName('FooBar.png');
-    }
-
-    /**
-     * Returns the actual mime part.
-     *
-     * @return MimePart
-     */
-    public function reveal(): MimePart
-    {
-        return $this->mimePart;
+        $this->mimePart->setFileName($filename);
     }
 
     /**
