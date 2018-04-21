@@ -18,7 +18,7 @@
     },
     "autoload": {
         "psr-4": {
-            "OS\\Mail\\": "."
+            "OS\\Mail\\": "./src"
         }
     }
 }
