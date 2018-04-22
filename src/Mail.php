@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright 2017 Oliver Schöndorn
+ * Copyright 2018 Oliver Schöndorn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -249,6 +249,7 @@ class Mail
         $this->mail->getHeaders()->addHeaderLine(
             'Message-Id: ' . date('Ymd') . '.' . md5(microtime(true)) . '@mailer.oswebstyle.de'
         );
+
         $this->mail->setBody($this->generateMessage());
 
         // Send the mail
@@ -260,24 +261,26 @@ class Mail
      * The structure of a mime mail looks like this:
      *
      * multipart/mixed
-     * +---------------------------+
-     * |                           |
-     * | multipart/related         |
-     * | +-----------------------+ |
-     * | |                       | |
-     * | | multipart/alternative | |
-     * | | +-------------------+ | |
-     * | | | - Text mail       | | |
-     * | | | - Html mail       | | |
-     * | | +-------------------+ | |
-     * | |                       | |
-     * | | - inline attachments  | |
-     * | |                       | |
-     * | +-----------------------+ |
-     * |                           |
-     * | - attachments             |
-     * |                           |
-     * +---------------------------+
+     * +-----------------------------+
+     * |                             |
+     * | multipart/related           |
+     * | +-------------------------+ |
+     * | |                         | |
+     * | | multipart/alternative   | |
+     * | | +---------------------+ | |
+     * | | |                     | | |
+     * | | | - Text mail (utf-8) | | |
+     * | | | - Html mail (utf-8) | | |
+     * | | |                     | | |
+     * | | +---------------------+ | |
+     * | |                         | |
+     * | | - inline attachments    | |
+     * | |                         | |
+     * | +-------------------------+ |
+     * |                             |
+     * | - attachments               |
+     * |                             |
+     * +-----------------------------+
      *
      * @return MimeMessage
      *
@@ -310,10 +313,16 @@ class Mail
     protected function generateAlternativePart(): MimePart
     {
         $message = new MimeMessage();
+        $boundary = $message->getMime()->boundary();
         foreach ($this->bodyParts as $bodyPart) {
-            $message->addPart($bodyPart->reveal());
+            $bodyPart->setCharset('utf-8');
+            $message->addPart($bodyPart->reveal()->setEncoding(Mime::ENCODING_8BIT));
         }
-        return (new MimePart($message->generateMessage()))->setType(Mime::MULTIPART_ALTERNATIVE);
+        return (new MimePart($message->generateMessage()))
+            ->setBoundary($boundary)
+            ->setEncoding($message->isMultiPart() ? Mime::ENCODING_7BIT : Mime::ENCODING_8BIT)
+            ->setCharset('utf-8')
+            ->setType($message->isMultiPart() ? Mime::MULTIPART_ALTERNATIVE : reset($this->bodyParts)->getMimeType());
     }
 
     /**
@@ -332,12 +341,17 @@ class Mail
         }
 
         $message = new MimeMessage();
+        $boundary = $message->getMime()->boundary();
         $message->addPart($alternativePart);
+
         foreach ($this->inlineAttachments as $attachment) {
-            $message->addPart($attachment->reveal());
+            $message->addPart($attachment->reveal()->setDisposition(Mime::DISPOSITION_INLINE));
         }
 
-        return (new MimePart($message->generateMessage()))->setType(Mime::MULTIPART_RELATED);
+        return (new MimePart($message->generateMessage()))
+            ->setBoundary($boundary)
+            ->setEncoding(Mime::ENCODING_7BIT)
+            ->setType(Mime::MULTIPART_RELATED . ';' . "\n" . ' type="multipart/alternative"');
     }
 
     /**
@@ -357,11 +371,16 @@ class Mail
         }
 
         $message = new MimeMessage();
+        $boundary = $message->getMime()->boundary();
         $message->addPart($relatedPart);
+
         foreach ($this->attachments as $attachment) {
             $message->addPart($attachment->reveal());
         }
 
-        return (new MimePart($message->generateMessage()))->setType(Mime::MULTIPART_MIXED);
+        return (new MimePart($message->generateMessage()))
+            ->setBoundary($boundary)
+            ->setEncoding(Mime::ENCODING_7BIT)
+            ->setType(Mime::MULTIPART_MIXED);
     }
 }

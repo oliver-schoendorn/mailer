@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright 2017 Oliver Schöndorn
+ * Copyright 2018 Oliver Schöndorn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,26 +20,13 @@ namespace OS\Mail;
 
 
 use Zend\Mime\Mime;
-use Zend\Mime\Part as MimePart;
 
-class MailAttachment extends MailPart
+class MailBody extends MailPart
 {
-    public function __construct($filename = 'attachment', $id = '')
+    public function __construct(string $mimeType = Mime::TYPE_HTML, string $id = '')
     {
         parent::__construct($id);
-        $this->mimePart->setDisposition(Mime::DISPOSITION_ATTACHMENT);
-        $this->mimePart->setEncoding(Mime::ENCODING_BASE64);
-        $this->mimePart->setFileName($filename);
-    }
-
-    /**
-     * This way you can use the following in email templates:
-     * <img src="<?= $mailAttachment; ?>" alt="this is an attachment object" />
-     *
-     * @return string
-     */
-    public function __toString()
-    {
-        return 'cid:' . $this->mimePart->getId();
+        $this->setMimeType($mimeType);
+        $this->mimePart->setEncoding(Mime::ENCODING_QUOTEDPRINTABLE);
     }
 }
