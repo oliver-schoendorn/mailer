@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright 2017 Oliver Schöndorn
+ * Copyright 2018 Oliver Schöndorn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,11 +24,19 @@ use Zend\Mime\Part as MimePart;
 
 class MailAttachment extends MailPart
 {
-    public function __construct($filename = 'attachment', $id = '')
+    /**
+     * MailAttachment constructor.
+     *
+     * @param string $filename
+     * @param string $mimeType
+     * @param string $id
+     */
+    public function __construct(string $filename, string $mimeType = Mime::TYPE_OCTETSTREAM, string $id = '')
     {
         parent::__construct($id);
         $this->mimePart->setDisposition(Mime::DISPOSITION_ATTACHMENT);
         $this->mimePart->setEncoding(Mime::ENCODING_BASE64);
+        $this->mimePart->setType($mimeType);
         $this->mimePart->setFileName($filename);
     }
 

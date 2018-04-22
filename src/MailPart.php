@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright 2017 Oliver Schöndorn
+ * Copyright 2018 Oliver Schöndorn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,10 @@
  * limitations under the License.
  */
 
-
 namespace OS\Mail;
 
 
+use Zend\Mime\Mime;
 use Zend\Mime\Part as MimePart;
 
 class MailPart
@@ -56,6 +56,16 @@ class MailPart
     }
 
     /**
+     * @param string $EOL
+     *
+     * @return string
+     */
+    public function getContent(string $EOL = Mime::LINEEND)
+    {
+        return $this->mimePart->getContent($EOL);
+    }
+
+    /**
      * @param string $mimeType
      * @return static
      */
@@ -63,6 +73,33 @@ class MailPart
     {
         $this->mimePart->setType($mimeType);
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMimeType()
+    {
+        return $this->mimePart->getType();
+    }
+
+    /**
+     * @param string $charset
+     *
+     * @return $this
+     */
+    public function setCharset(string $charset)
+    {
+        $this->mimePart->setCharset($charset);
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCharset(): string
+    {
+        return $this->mimePart->getCharset();
     }
 
     /**
